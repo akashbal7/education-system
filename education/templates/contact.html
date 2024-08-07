@@ -19,6 +19,7 @@
             <div class="row">
                 <div class="col-xl-6 col-md-12 col-sm-12">
                     <div class="contact_form">
+                        
                         <div id="message"></div>
                         <form id="contactform" class="" action="{% url 'contact' %}" name="contactform" method="post">
                             {% csrf_token %}
@@ -50,6 +51,7 @@
 						<div id="custom-places" class="small-map"></div>
 					</div>
 				</div>
+                
             </div><!-- end row -->
         </div><!-- end container -->
     </div><!-- end section -->
@@ -62,6 +64,21 @@
 	<!-- Mapsed JavaScript -->
 	<script src="{% static 'js/mapsed.js'  %}"></script>
 	<script src="{% static 'js/01-custom-places-example.js'  %}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertElement = document.getElementById('customAlert');
+            if (alertElement.innerText.trim() !== '') {
+                alertElement.classList.add('show');
+                setTimeout(function() {
+                    alertElement.classList.remove('show');
+                    setTimeout(function() {
+                        alertElement.style.display = 'none';
+                    }, 500); // Wait for the animation to complete before hiding
+                }, 2000); // Hide after 2 seconds
+            }
+        });
+                console.log("66666666666666666666666666666666666666666666666666")
+                </script>
     <!-- ALL PLUGINS -->
     
 

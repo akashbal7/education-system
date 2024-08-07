@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
 from education.models import Course, CustomUser, Quote   
 
@@ -31,7 +32,8 @@ def contact(request):
         quote = Quote.objects.create(first_name=first_name, last_name=last_name, email=email, phone=phone, details=details)
         quote.save()
         print('quote created')
-        return redirect('/')
+        messages.success(request, 'Quote created successfully!')
+        return redirect('contact')
     else:
         
         return render(request, 'contact.html')

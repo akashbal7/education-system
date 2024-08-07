@@ -38,6 +38,22 @@
        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
      <![endif]-->
+
+     <style>
+        #customAlert {
+    position: fixed;
+    top: 20px;
+    right: -300px; /* Adjust based on the width of your alert */
+    transition: right 0.5s ease-in-out;
+    z-index: 1000; /* Ensure it appears above other elements */
+    display: none; /* Hide initially */
+}
+
+#customAlert.show {
+    display: block;
+    right: 20px; /* Position it visible */
+}
+     </style>
  
 </head>
 <body class="host_version">
@@ -121,6 +137,13 @@
                     </ul>
 				</div>
 			</div>
+            <div id="customAlert" class="alert alert-primary" role="alert">
+                {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+            </div>
 		</nav>
 	</header>
 	<!-- End header -->
@@ -200,6 +223,7 @@
         <script src="{% static 'js/all.js'  %}"></script>
         <!-- ALL PLUGINS -->
         <script src="{% static 'js/custom.js' %}"></script>
+
    
 </body>
 </html>
