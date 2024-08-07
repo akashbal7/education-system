@@ -1,26 +1,32 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+
 # Create your models here.
-class Student(models.Model):
-    name = models.CharField(max_length=100, null=False)
-    age = models.IntegerField(null=True, blank=True)
-    contact = models.CharField(max_length=100, null=True, blank=True)
-    password = models.CharField(max_length=128, null=False)
-    profile_picture = models.ImageField(upload_to='students/', null=True, blank=True)
+
+class CustomUser(AbstractUser):
+    ROLE_CHOICES = [
+        ('TEACHER', 'Teacher'),
+        ('STUDENT', 'Student'),
+        ('SUPERADMIN', 'Superadmin'),
+        ('ADMIN', 'Admin'),
+    ]
+    # Add your custom fields here
+    role = models.CharField(
+        max_length=10,
+        choices=ROLE_CHOICES,
+        default='STUDENT'
+    )
+
+    department = models.CharField(
+        max_length=100,
+        default='not assigned'
+    )
 
     def __str__(self):
-        return self.name
+        return self.username
+
     
-class Instructor(models.Model):
-    instructor_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
-    department = models.CharField(max_length=100, blank=True, null=True)
-    contact = models.CharField(max_length=100, blank=True, null=True)
-    password = models.CharField(max_length=100, default='12345678')  # Default password field
-    profile_picture = models.ImageField(upload_to='instructors/', null=True, blank=True)
-
-    def __str__(self):
-        return self.name
     
 class Course(models.Model):
     course_id = models.AutoField(primary_key=True)
@@ -35,7 +41,7 @@ class Course(models.Model):
     
 class CourseInstructor(models.Model):
     course = models.ForeignKey(Course, related_name='course_instructors', on_delete=models.CASCADE)
-    instructor = models.ForeignKey(Instructor, related_name='course_instructors', on_delete=models.CASCADE)
+    instructor = models.ForeignKey(CustomUser, related_name='course_instructors', on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (('course', 'instructor'),)
@@ -43,16 +49,30 @@ class CourseInstructor(models.Model):
         verbose_name_plural = "Assign teacher to course"
     
     def __str__(self):
-        return f"{self.course.name} - {self.instructor.name}"
+        return f"{self.course.name} - {self.instructor.username}"
+    
+
 
 class Enrollment(models.Model):
-    student = models.ForeignKey(Student, related_name='enrollments', on_delete=models.CASCADE)
+    student = models.ForeignKey(CustomUser, related_name='enrollments', on_delete=models.CASCADE)
     course = models.ForeignKey(Course, related_name='enrollments', on_delete=models.CASCADE)
     enrollment_date = models.DateField()
 
     def __str__(self):
-        return f"{self.student.name} enrolled in {self.course.name} on {self.enrollment_date}"
+        return f"{self.student.username} enrolled in {self.course.name} on {self.enrollment_date}"
     
     class Meta:
         verbose_name = "Enrollment"
         verbose_name_plural = "Assign Students to course"
+
+from django.db import models
+
+class Quote(models.Model):
+    first_name = models.CharField(max_length=100, null=False)
+    last_name = models.CharField(max_length=100, null=False)
+    email = models.EmailField(null=False)
+    phone = models.CharField(max_length=20, null=False)
+    details = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"

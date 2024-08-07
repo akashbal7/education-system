@@ -1,7 +1,6 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
-from education.models import Course, Instructor
+from education.models import Course, CustomUser, Quote   
 
 # Create your views here.
 def home(request):
@@ -14,7 +13,7 @@ def about(request):
     return render(request, 'about.html')
 
 def teachers(request):
-    instructors = Instructor.objects.all()
+    instructors = CustomUser.objects.filter(role='TEACHER')
     return render(request, 'teachers.html', {'instructors': instructors})
 
 def course(request):
@@ -22,4 +21,20 @@ def course(request):
     return render(request, 'course.html', {'courses': courses})
 
 def contact(request):
-    return render(request, 'contact.html')
+    if request.method == 'POST':
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        details = request.POST.get('comments')
+
+        quote = Quote.objects.create(first_name=first_name, last_name=last_name, email=email, phone=phone, details=details)
+        quote.save()
+        print('quote created')
+        return redirect('/')
+    else:
+        
+        return render(request, 'contact.html')
+
+
+
