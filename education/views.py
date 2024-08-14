@@ -1,14 +1,24 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.contrib import messages, auth
+from django.contrib.auth.models import User
 
-from education.models import Course, CustomUser, Quote   
+from education.models import Blog, Course, CustomUser, Quote   
 
 # Create your views here.
 def home(request):
-    return render(request, 'index.html')
+    instructorCount = CustomUser.objects.filter(role='TEACHER').count
+    studentCount = CustomUser.objects.filter(role='STUDENT').count
+    totalCourse = Course.objects.all().count
+    context = {
+        'instructorCount': instructorCount,
+        'studentCount': studentCount,
+        'totalCourse': totalCourse,
+    }
+    return render(request, 'index.html', context)
 
 def blog(request):
-    return render(request, 'blog.html')
+    blogs = Blog.objects.all
+    return render(request, 'blog.html', {'blogs': blogs})
 
 def about(request):
     return render(request, 'about.html')
@@ -37,6 +47,27 @@ def contact(request):
     else:
         
         return render(request, 'contact.html')
+    
 
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        print(username)
+        print(password)
+        user = auth.authenticate(username=username, password=password)
+        print(user)
+        if user is not None :
+            user = CustomUser.objects.get(username=username)
+            user.isLogin = True
+            user.save()
+            messages.success(request, 'User logged in successfully')
+            auth.login(request, user)
+            return redirect("/")
+        else:
+            messages.info(request, 'Inavlid credentials')
+            return render(request, 'login.html')
+    else :
+        return render(request, 'login.html')
 
 

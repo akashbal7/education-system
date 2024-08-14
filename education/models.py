@@ -23,10 +23,11 @@ class CustomUser(AbstractUser):
         default='not assigned'
     )
 
+    isLogin = models.BooleanField(default=False)
+
     def __str__(self):
         return self.username
 
-    
     
 class Course(models.Model):
     course_id = models.AutoField(primary_key=True)
@@ -76,3 +77,13 @@ class Quote(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+class Blog(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    image = models.ImageField(upload_to='blogs/')
+    created_date = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(CustomUser, related_name='blogs', on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return self.title
