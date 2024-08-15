@@ -7,6 +7,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from education.models import Blog, Course, CourseInstructor, CustomUser, Enrollment
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
+
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
